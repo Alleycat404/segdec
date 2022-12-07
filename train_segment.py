@@ -36,8 +36,8 @@ parser.add_argument("--need_save", type=bool, default=True, help="need to save")
 parser.add_argument("--save_interval", type=int, default=10, help="interval of save weights")
 
 
-parser.add_argument("--img_height", type=int, default=1264, help="size of image height")
-parser.add_argument("--img_width", type=int, default=496, help="size of image width")
+parser.add_argument("--img_height", type=int, default=1248, help="size of image height")
+parser.add_argument("--img_width", type=int, default=480, help="size of image width")
 
 opt = parser.parse_args()
 
