@@ -14,6 +14,7 @@ import os
 import sys
 import argparse
 import time
+import cv2
 import PIL.Image as Image
 
 parser = argparse.ArgumentParser()
@@ -21,10 +22,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--cuda", type=bool, default=True, help="number of gpu")
 parser.add_argument("--test_seg_epoch", type=int, default=100, help="test segment epoch")
 parser.add_argument("--test_dec_epoch", type=int, default=60, help="test segment epoch")
-parser.add_argument("--img_height", type=int, default=1260, help="size of image height")
-parser.add_argument("--img_width", type=int, default=500, help="size of image width")
+parser.add_argument("--img_height", type=int, default=704, help="size of image height")
+parser.add_argument("--img_width", type=int, default=256, help="size of image width")
 
 opt = parser.parse_args()
+
 
 print(opt)
 
@@ -91,11 +93,16 @@ for i, testBatch in enumerate(testloader):
     else: 
         labelStr = "OK"
 
+    # imgTest = imgTest.mul(255).clamp_(0, 255).squeeze().to('cpu', torch.uint8).numpy()
+    # cv2.putText(imgTest, str(cTest.item()), (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 0, 0), 2)
+
     save_path_str = os.path.join(dataSetRoot, "testResult")
 
     if not os.path.exists(save_path_str):
         os.makedirs(save_path_str, exist_ok=True)
 
     print("processing image NO %d, time comsuption %fs"%(i, t2 - t1))
-    save_image(imgTest.data, "%s/img_%d_%s.jpg"% (save_path_str, i, labelStr))
-    save_image(segTest.data, "%s/img_%d_seg_%s.jpg"% (save_path_str, i, labelStr))
+    save_image(imgTest.data, "%s/img_%d_%s_%d.jpg"% (save_path_str, i, labelStr, cTest.item()))
+    save_image(segTest.data, "%s/img_%d_seg_%s_%d.jpg"% (save_path_str, i, labelStr, cTest.item()))
+
+

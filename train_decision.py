@@ -39,11 +39,12 @@ parser.add_argument("--need_save", type=bool, default=True, help="need to save")
 parser.add_argument("--save_interval", type=int, default=10, help="interval of save weights")
 
 
-parser.add_argument("--img_height", type=int, default=1248, help="size of image height")
-parser.add_argument("--img_width", type=int, default=480, help="size of image width")
+parser.add_argument("--img_height", type=int, default=704, help="size of image height")
+parser.add_argument("--img_width", type=int, default=256, help="size of image width")
 
 
 opt = parser.parse_args()
+
 
 print(opt)
 
@@ -57,7 +58,7 @@ decision_net = DecisionNet(init_weights=True)
 
 # Loss functions
 #criterion_segment  = torch.nn.MSELoss()
-criterion_decision = torch.nn.MSELoss()
+criterion_decision = torch.nn.BCELoss()
 
 
 if opt.cuda:
