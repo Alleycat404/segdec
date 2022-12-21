@@ -102,7 +102,7 @@ for i, testBatch in enumerate(testloader):
         os.makedirs(save_path_str, exist_ok=True)
 
     print("processing image NO %d, time comsuption %fs"%(i, t2 - t1))
-    save_image(imgTest.data, "%s/img_%d_%s_%d.jpg"% (save_path_str, i, labelStr, cTest.item()))
-    save_image(segTest.data, "%s/img_%d_seg_%s_%d.jpg"% (save_path_str, i, labelStr, cTest.item()))
+    save_image(imgTest.data, "%s/%f_img_%d_%s.jpg"% (save_path_str, cTest.item(), i, labelStr))
+    save_image(segTest.data, "%s/%f_img_%d_seg_%s.jpg"% (save_path_str, cTest.item(), i, labelStr))
 
 

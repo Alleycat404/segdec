@@ -65,7 +65,7 @@ class SegmentNet(nn.Module):
 
         self.layer5 = nn.Sequential(
                             nn.Conv2d(1024, 1, 1),
-                            nn.ReLU(inplace=True)
+                            # nn.ReLU(inplace=True)
                         )
 
         if init_weights == True:

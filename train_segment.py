@@ -30,7 +30,7 @@ parser.add_argument("--cuda", type=bool, default=True, help="number of gpu")
 parser.add_argument("--gpu_num", type=int, default=1, help="number of gpu")
 parser.add_argument("--worker_num", type=int, default=0, help="number of input workers")
 parser.add_argument("--batch_size", type=int, default=4, help="batch size of input")
-parser.add_argument("--lr", type=float, default=0.001, help="adam: learning rate")
+parser.add_argument("--lr", type=float, default=0.1, help="adam: learning rate")
 parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
 parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of first order momentum of gradient")
 
@@ -76,7 +76,7 @@ else:
 # Optimizers
 # optimizer_seg = torch.optim.Adam(segment_net.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 optimizer_seg = torch.optim.ASGD(segment_net.parameters(), lr=opt.lr)
-# scheduler = MultiStepLR(optimizer_seg, milestones=[30, 60], gamma=0.1)
+scheduler = MultiStepLR(optimizer_seg, milestones=[30, 60], gamma=0.1)
 
 transforms_ = transforms.Compose([
     transforms.Resize((opt.img_height, opt.img_width), transforms.InterpolationMode.BICUBIC),
@@ -206,7 +206,7 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
             save_image(segTest.data, "%s/img_%d_seg.jpg" % (save_path_str, i))
 
         segment_net.train()
-    # scheduler.step()
+    scheduler.step()
 
     # save parameters *****************************************************************
     if opt.need_save and epoch % opt.save_interval == 0 and epoch >= opt.save_interval:

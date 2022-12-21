@@ -210,8 +210,8 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
                 labelStr = "OK"
 
             print("processing image NO %d, time comsuption %fs"%(i, t2 - t1))
-            save_image(imgTest.data, "%s/img_%d_%s.jpg"% (save_path_str, i , labelStr))
-            save_image(segTest.data, "%s/img_%d_seg_%s.jpg"% (save_path_str, i, labelStr))
+            save_image(imgTest.data, "%s/img_%d_%s_%d.jpg"% (save_path_str, i , labelStr, cTest.item()))
+            save_image(segTest.data, "%s/img_%d_seg_%s_%d.jpg"% (save_path_str, i, labelStr, cTest.item()))
 
         #decision_net.train()
     scheduler.step()
