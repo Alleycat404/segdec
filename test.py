@@ -22,8 +22,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--cuda", type=bool, default=True, help="number of gpu")
 parser.add_argument("--test_seg_epoch", type=int, default=100, help="test segment epoch")
 parser.add_argument("--test_dec_epoch", type=int, default=60, help="test segment epoch")
-parser.add_argument("--img_height", type=int, default=704, help="size of image height")
-parser.add_argument("--img_width", type=int, default=256, help="size of image width")
+parser.add_argument("--img_height", type=int, default=1024, help="size of image height")
+parser.add_argument("--img_width", type=int, default=384, help="size of image width")
 
 opt = parser.parse_args()
 

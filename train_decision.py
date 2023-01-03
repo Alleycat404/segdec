@@ -18,6 +18,9 @@ import sys
 import argparse
 import time
 import PIL.Image as Image
+import logging
+
+logging.basicConfig(filename="train_decision.txt", level=logging.INFO)
 
 parser = argparse.ArgumentParser()
 
@@ -25,7 +28,7 @@ parser.add_argument("--cuda", type=bool, default=True, help="number of gpu")
 parser.add_argument("--gpu_num", type=int, default=1, help="number of gpu")
 parser.add_argument("--worker_num", type=int, default=0, help="number of input workers")
 parser.add_argument("--batch_size", type=int, default=4, help="batch size of input")
-parser.add_argument("--lr", type=float, default=0.1, help="adam: learning rate")
+parser.add_argument("--lr", type=float, default=0.001, help="adam: learning rate")
 parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
 parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of first order momentum of gradient")
 
@@ -34,13 +37,13 @@ parser.add_argument("--end_epoch", type=int, default=61, help="end_epoch")
 parser.add_argument("--seg_epoch", type=int, default=100, help="pretrained segment epoch")
 
 parser.add_argument("--need_test", type=bool, default=True, help="need to test")
-parser.add_argument("--test_interval", type=int, default=10, help="interval of test")
+parser.add_argument("--test_interval", type=int, default=1, help="interval of test")
 parser.add_argument("--need_save", type=bool, default=True, help="need to save")
 parser.add_argument("--save_interval", type=int, default=10, help="interval of save weights")
 
 
-parser.add_argument("--img_height", type=int, default=704, help="size of image height")
-parser.add_argument("--img_width", type=int, default=256, help="size of image width")
+parser.add_argument("--img_height", type=int, default=1024, help="size of image height")
+parser.add_argument("--img_width", type=int, default=384, help="size of image width")
 
 
 opt = parser.parse_args()
@@ -57,14 +60,14 @@ segment_net = SegmentNet(init_weights=True)
 decision_net = DecisionNet(init_weights=True)
 
 # Loss functions
-#criterion_segment  = torch.nn.MSELoss()
+# criterion_decision  = torch.nn.MSELoss()
 criterion_decision = torch.nn.BCELoss()
 
 
 if opt.cuda:
     segment_net = segment_net.cuda()
     decision_net = decision_net.cuda()
-    #criterion_segment.cuda()
+    #criterion_decision.cuda()
     criterion_decision.cuda()
 
 if opt.gpu_num > 1:
@@ -184,6 +187,7 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
              )
         )
     # test ****************************************************************************
+    loss_epoch = []
     if opt.need_test and epoch % opt.test_interval == 0 and epoch >= opt.test_interval:
         #decision_net.eval()
         #segment_net.eval()
@@ -197,6 +201,12 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
             segTest = rstTest["seg"]
 
             cTest = decision_net(fTest, segTest)
+            if testBatch["label"]:
+                gtTest = Variable(torch.Tensor(np.ones((cTest.size(0), 1))), requires_grad=False).cuda()
+            else:
+                gtTest = Variable(torch.Tensor(np.zeros((cTest.size(0), 1))), requires_grad=False).cuda()
+            loss_dec = criterion_decision(cTest, gtTest)
+            loss_epoch.append(loss_dec.cpu().detach().numpy())
 
             t2 = time.time()
             save_path_str = "./testResultDec/epoch_%d"%epoch
@@ -209,9 +219,11 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
             else:
                 labelStr = "OK"
 
-            print("processing image NO %d, time comsuption %fs"%(i, t2 - t1))
+            # print("processing image NO %d, time comsuption %fs"%(i, t2 - t1))
             save_image(imgTest.data, "%s/img_%d_%s_%d.jpg"% (save_path_str, i , labelStr, cTest.item()))
             save_image(segTest.data, "%s/img_%d_seg_%s_%d.jpg"% (save_path_str, i, labelStr, cTest.item()))
+        logging.info("\r [Epoch %d/%d] [loss %f] [lr %f]" % (
+            epoch, opt.end_epoch, np.mean(loss_epoch), optimizer_dec.state_dict()['param_groups'][0]['lr']))
 
         #decision_net.train()
     scheduler.step()

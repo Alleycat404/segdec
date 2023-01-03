@@ -5,6 +5,7 @@ from dataset import KolektorDataset
 
 import torch.nn as nn
 import torch
+import logging
 
 from torchvision import datasets
 from torchvision.utils import save_image
@@ -23,6 +24,7 @@ import cv2
 
 # torch.set_printoptions(profile="full")
 
+logging.basicConfig(filename="train_segment.txt", level=logging.INFO)
 
 parser = argparse.ArgumentParser()
 
@@ -42,8 +44,8 @@ parser.add_argument("--test_interval", type=int, default=10, help="interval of t
 parser.add_argument("--need_save", type=bool, default=True, help="need to save")
 parser.add_argument("--save_interval", type=int, default=10, help="interval of save weights")
 
-parser.add_argument("--img_height", type=int, default=704, help="size of image height")
-parser.add_argument("--img_width", type=int, default=256, help="size of image width")
+parser.add_argument("--img_height", type=int, default=1024, help="size of image height")
+parser.add_argument("--img_width", type=int, default=384, help="size of image width")
 
 opt = parser.parse_args()
 
@@ -57,7 +59,7 @@ dataSetRoot = "./Data"  # "/home/sean/Data/KolektorSDD_sean"  #
 segment_net = SegmentNet(init_weights=True)
 
 # Loss functions
-criterion_segment = torch.nn.BCEWithLogitsLoss(reduction="none")
+criterion_segment = torch.nn.BCEWithLogitsLoss()
 
 if opt.cuda:
     segment_net = segment_net.cuda()
@@ -74,9 +76,9 @@ else:
     segment_net.apply(weights_init_normal)
 
 # Optimizers
-# optimizer_seg = torch.optim.Adam(segment_net.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-optimizer_seg = torch.optim.ASGD(segment_net.parameters(), lr=opt.lr)
-scheduler = MultiStepLR(optimizer_seg, milestones=[30, 60], gamma=0.1)
+optimizer_seg = torch.optim.Adam(segment_net.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+# optimizer_seg = torch.optim.ASGD(segment_net.parameters(), lr=opt.lr)
+scheduler = MultiStepLR(optimizer_seg, milestones=[30, 50, 70], gamma=0.1)
 
 transforms_ = transforms.Compose([
     transforms.Resize((opt.img_height, opt.img_width), transforms.InterpolationMode.BICUBIC),
@@ -170,7 +172,7 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
         #     show_img(seg)
         #     show_img(mask)
 
-        loss_seg = torch.mean(criterion_segment(seg, mask))
+        loss_seg = criterion_segment(seg, mask)
         loss_seg.backward()
         optimizer_seg.step()
 
@@ -181,20 +183,22 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
                 opt.end_epoch,
                 i,
                 lenNum,
-                torch.mean(loss_seg)
+                loss_seg.item()
             )
         )
-
     # test ****************************************************************************
-    if opt.need_test and epoch % opt.test_interval == 0 and epoch >= opt.test_interval:
+    if opt.need_test:
+        loss_epoch = []
         # segment_net.eval()
-
         for i, testBatch in enumerate(testloader):
             imgTest = testBatch["img"].cuda()
+            maskTest = testBatch["mask"].cuda()
             t1 = time.time()
             rstTest = segment_net(imgTest)
             t2 = time.time()
             segTest = rstTest["seg"]
+            testLoss = criterion_segment(segTest, maskTest)
+            loss_epoch.append(testLoss.cpu().detach().numpy())
 
             save_path_str = "./testResultSeg/epoch_%d" % epoch
             if os.path.exists(save_path_str) == False:
@@ -206,6 +210,7 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
             save_image(segTest.data, "%s/img_%d_seg.jpg" % (save_path_str, i))
 
         segment_net.train()
+        logging.info("\r [Epoch %d/%d] [loss %f] [lr %f]" % (epoch, opt.end_epoch, np.mean(loss_epoch), optimizer_seg.state_dict()['param_groups'][0]['lr']))
     scheduler.step()
 
     # save parameters *****************************************************************
@@ -220,3 +225,5 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
         print("save weights ! epoch = %d" % epoch)
         # segment_net.train()
         pass
+
+

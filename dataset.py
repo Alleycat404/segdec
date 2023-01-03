@@ -2,6 +2,7 @@ import glob
 import os
 import numpy as np
 import cv2
+import torch
 
 from torch.utils.data import Dataset 
 from PIL import Image
@@ -25,8 +26,7 @@ class KolektorDataset(Dataset):
 
         self.imgFiles   = sorted(glob.glob(os.path.join(dataRoot, subFold) + "/*.jpg"))
 
-        if isTrain:
-            self.labelFiles = sorted(glob.glob(os.path.join(dataRoot, subFold) + "/*.bmp"))
+        self.labelFiles = sorted(glob.glob(os.path.join(dataRoot, subFold) + "/*.bmp"))
 
         self.len = len(self.imgFiles)
 
@@ -61,7 +61,15 @@ class KolektorDataset(Dataset):
         else:
             img  = Image.open(self.imgFiles[idx]).convert("RGB")
             img = self.transform(img)
-            return {"img":img}
+            mask = Image.open(self.labelFiles[idx])
+            mask = self.maskTransform(mask)
+            if os.path.split(self.labelFiles[idx])[-1][0] == "F":
+                label = False
+            if os.path.split(self.labelFiles[idx])[-1][0] == "T":
+                label = True
+
+
+            return {"img":img, "mask":mask, "label":label}
 
     def __len__(self):
         return len(self.imgFiles)

@@ -1,0 +1,75 @@
+INFO:root: [Epoch 10/61] [loss 1.283104] [lr 0.100000]
+INFO:root: [Epoch 20/61] [loss 1.689130] [lr 0.010000]
+INFO:root: [Epoch 30/61] [loss 1.792115] [lr 0.010000]
+INFO:root: [Epoch 40/61] [loss 1.664347] [lr 0.001000]
+INFO:root: [Epoch 50/61] [loss 1.682508] [lr 0.001000]
+INFO:root: [Epoch 60/61] [loss 1.710408] [lr 0.001000]
+INFO:root: [Epoch 10/61] [loss 0.876811] [lr 0.100000]
+INFO:root: [Epoch 20/61] [loss 0.876812] [lr 0.010000]
+INFO:root: [Epoch 30/61] [loss 0.876812] [lr 0.010000]
+INFO:root: [Epoch 40/61] [loss 0.876812] [lr 0.001000]
+INFO:root: [Epoch 50/61] [loss 0.876812] [lr 0.001000]
+INFO:root: [Epoch 60/61] [loss 0.876812] [lr 0.001000]
+INFO:root: [Epoch 10/61] [loss 0.147727] [lr 0.001000]
+INFO:root: [Epoch 20/61] [loss 0.160613] [lr 0.000100]
+INFO:root: [Epoch 30/61] [loss 0.164227] [lr 0.000100]
+INFO:root: [Epoch 40/61] [loss 0.164187] [lr 0.000010]
+INFO:root: [Epoch 50/61] [loss 0.163558] [lr 0.000010]
+INFO:root: [Epoch 60/61] [loss 0.166072] [lr 0.000010]
+INFO:root: [Epoch 10/61] [loss 0.248150] [lr 0.000010]
+INFO:root: [Epoch 20/61] [loss 0.247252] [lr 0.000001]
+INFO:root: [Epoch 30/61] [loss 0.247253] [lr 0.000001]
+INFO:root: [Epoch 40/61] [loss 0.247297] [lr 0.000000]
+INFO:root: [Epoch 50/61] [loss 0.247297] [lr 0.000000]
+INFO:root: [Epoch 60/61] [loss 0.247292] [lr 0.000000]
+INFO:root: [Epoch 10/11] [loss 0.158673] [lr 0.001000]
+INFO:root: [Epoch 1/11] [loss 0.225397] [lr 0.001000]
+INFO:root: [Epoch 2/11] [loss 0.216445] [lr 0.001000]
+INFO:root: [Epoch 3/11] [loss 0.195460] [lr 0.001000]
+INFO:root: [Epoch 4/11] [loss 0.171058] [lr 0.001000]
+INFO:root: [Epoch 5/11] [loss 0.157804] [lr 0.001000]
+INFO:root: [Epoch 6/11] [loss 0.141696] [lr 0.001000]
+INFO:root: [Epoch 7/11] [loss 0.142450] [lr 0.001000]
+INFO:root: [Epoch 8/11] [loss 0.140280] [lr 0.001000]
+INFO:root: [Epoch 9/11] [loss 0.235438] [lr 0.001000]
+INFO:root: [Epoch 10/11] [loss 0.138023] [lr 0.001000]
+INFO:root: [Epoch 1/11] [loss 0.607410] [lr 0.001000]
+INFO:root: [Epoch 2/11] [loss 0.592358] [lr 0.001000]
+INFO:root: [Epoch 3/11] [loss 0.592237] [lr 0.001000]
+INFO:root: [Epoch 4/11] [loss 0.587366] [lr 0.001000]
+INFO:root: [Epoch 5/11] [loss 0.588636] [lr 0.001000]
+INFO:root: [Epoch 6/11] [loss 0.517125] [lr 0.001000]
+INFO:root: [Epoch 7/11] [loss 0.509099] [lr 0.001000]
+INFO:root: [Epoch 8/11] [loss 0.506206] [lr 0.001000]
+INFO:root: [Epoch 9/11] [loss 0.495838] [lr 0.001000]
+INFO:root: [Epoch 10/11] [loss 0.463717] [lr 0.001000]
+INFO:root: [Epoch 1/31] [loss 0.647454] [lr 0.001000]
+INFO:root: [Epoch 2/31] [loss 0.618708] [lr 0.001000]
+INFO:root: [Epoch 3/31] [loss 0.649126] [lr 0.001000]
+INFO:root: [Epoch 4/31] [loss 0.562680] [lr 0.001000]
+INFO:root: [Epoch 5/31] [loss 0.616000] [lr 0.001000]
+INFO:root: [Epoch 6/31] [loss 0.512480] [lr 0.001000]
+INFO:root: [Epoch 7/31] [loss 0.491552] [lr 0.001000]
+INFO:root: [Epoch 8/31] [loss 0.469404] [lr 0.001000]
+INFO:root: [Epoch 9/31] [loss 0.463791] [lr 0.001000]
+INFO:root: [Epoch 10/31] [loss 0.458522] [lr 0.001000]
+INFO:root: [Epoch 11/31] [loss 0.466337] [lr 0.001000]
+INFO:root: [Epoch 12/31] [loss 0.482760] [lr 0.001000]
+INFO:root: [Epoch 13/31] [loss 0.509182] [lr 0.001000]
+INFO:root: [Epoch 14/31] [loss 0.458909] [lr 0.001000]
+INFO:root: [Epoch 15/31] [loss 0.542257] [lr 0.001000]
+INFO:root: [Epoch 16/31] [loss 0.540550] [lr 0.001000]
+INFO:root: [Epoch 17/31] [loss 0.573853] [lr 0.001000]
+INFO:root: [Epoch 18/31] [loss 0.546690] [lr 0.001000]
+INFO:root: [Epoch 19/31] [loss 0.540744] [lr 0.001000]
+INFO:root: [Epoch 20/31] [loss 0.543500] [lr 0.000100]
+INFO:root: [Epoch 21/31] [loss 0.540985] [lr 0.000100]
+INFO:root: [Epoch 22/31] [loss 0.545326] [lr 0.000100]
+INFO:root: [Epoch 23/31] [loss 0.553552] [lr 0.000100]
+INFO:root: [Epoch 24/31] [loss 0.556077] [lr 0.000100]
+INFO:root: [Epoch 25/31] [loss 0.558935] [lr 0.000100]
+INFO:root: [Epoch 26/31] [loss 0.564556] [lr 0.000100]
+INFO:root: [Epoch 27/31] [loss 0.571660] [lr 0.000100]
+INFO:root: [Epoch 28/31] [loss 0.570981] [lr 0.000100]
+INFO:root: [Epoch 29/31] [loss 0.586469] [lr 0.000100]
+INFO:root: [Epoch 30/31] [loss 0.593422] [lr 0.000100]

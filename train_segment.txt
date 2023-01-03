@@ -1,0 +1,20 @@
+INFO:root: [Epoch 10/101] [loss 0.002949] [lr 0.100000]
+INFO:root: [Epoch 20/101] [loss 0.002583] [lr 0.100000]
+INFO:root: [Epoch 30/101] [loss 0.001393] [lr 0.010000]
+INFO:root: [Epoch 40/101] [loss 0.001152] [lr 0.010000]
+INFO:root: [Epoch 50/101] [loss 0.001116] [lr 0.001000]
+INFO:root: [Epoch 60/101] [loss 0.001098] [lr 0.001000]
+INFO:root: [Epoch 70/101] [loss 0.001098] [lr 0.000100]
+INFO:root: [Epoch 80/101] [loss 0.001099] [lr 0.000100]
+INFO:root: [Epoch 90/101] [loss 0.001094] [lr 0.000100]
+INFO:root: [Epoch 100/101] [loss 0.001091] [lr 0.000100]
+INFO:root: [Epoch 10/101] [loss 0.000000] [lr 0.100000]
+INFO:root: [Epoch 20/101] [loss 0.000000] [lr 0.100000]
+INFO:root: [Epoch 30/101] [loss 0.000000] [lr 0.010000]
+INFO:root: [Epoch 40/101] [loss 0.000000] [lr 0.010000]
+INFO:root: [Epoch 50/101] [loss 0.000000] [lr 0.001000]
+INFO:root: [Epoch 60/101] [loss 0.000000] [lr 0.001000]
+INFO:root: [Epoch 70/101] [loss 0.000000] [lr 0.000100]
+INFO:root: [Epoch 80/101] [loss 0.000000] [lr 0.000100]
+INFO:root: [Epoch 90/101] [loss 0.000000] [lr 0.000100]
+INFO:root: [Epoch 100/101] [loss 0.000000] [lr 0.000100]

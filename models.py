@@ -95,6 +95,7 @@ class DecisionNet(nn.Module):
                             nn.Conv2d(8, 16, 5, stride=1, padding=2),
                             nn.BatchNorm2d(16),
                             nn.ReLU(inplace=True),
+                            nn.MaxPool2d(2),
                             nn.Conv2d(16, 32, 5, stride=1, padding=2),
                             nn.BatchNorm2d(32),
                             nn.ReLU(inplace=True)
