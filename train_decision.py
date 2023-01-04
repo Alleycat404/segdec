@@ -104,14 +104,14 @@ transforms_mask = transforms.Compose([
 
 trainOKloader = DataLoader(
     KolektorDataset(dataSetRoot, transforms_=transforms_, transforms_mask= transforms_mask, subFold="Train_OK", isTrain=True),
-    batch_size=opt.batch_size,
+    batch_size=int(opt.batch_size/2),
     shuffle=True,
     num_workers=opt.worker_num,
 )
 
 trainNGloader = DataLoader(
     KolektorDataset(dataSetRoot, transforms_=transforms_,  transforms_mask= transforms_mask, subFold="Train_NG", isTrain=True),
-    batch_size=opt.batch_size,
+    batch_size=int(opt.batch_size/2),
     shuffle=True,
     num_workers=opt.worker_num,
 )
@@ -136,22 +136,23 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
     iterOK = trainOKloader.__iter__()
     iterNG = trainNGloader.__iter__()
 
-    lenNum = min( len(trainNGloader), len(trainOKloader))
-    lenNum = 2*(lenNum-1)
+    lenNum = min(len(trainNGloader), len(trainOKloader))
+    lenNum = lenNum-1
 
     #decision_net.train()
     #segment_net.eval()
     # train *****************************************************************
     for i in range(0, lenNum):
 
-        if i % 2 == 0:
-            batchData = iterOK.__next__()
-            #idx, batchData = enumerate(trainOKloader)
-            gt_c = Variable(torch.Tensor(np.zeros((batchData["img"].size(0), 1))), requires_grad=False)
-        else :
-            batchData = iterNG.__next__()
-            gt_c = Variable(torch.Tensor(np.ones((batchData["img"].size(0), 1))), requires_grad=False)
-            #idx, batchData = enumerate(trainNGloader)
+        batchData_OK = iterOK.__next__()
+        #idx, batchData = enumerate(trainOKloader)
+        gt_c_OK = Variable(torch.Tensor(np.zeros((batchData_OK["img"].size(0), 1))), requires_grad=False)
+        batchData_NG = iterNG.__next__()
+        gt_c_NG = Variable(torch.Tensor(np.ones((batchData_NG["img"].size(0), 1))), requires_grad=False)
+        #idx, batchData = enumerate(trainNGloader)
+        batchData = {"img": batchData_OK["img"] + batchData_NG["img"],
+                     "mask": batchData_OK["mask"] + batchData_NG["mask"]}
+        gt_c = torch.cat((gt_c_OK, gt_c_NG), 0)
 
         if opt.cuda:
             img = batchData["img"].cuda()

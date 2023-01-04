@@ -24,7 +24,7 @@ import cv2
 
 # torch.set_printoptions(profile="full")
 
-logging.basicConfig(filename="train_segment.txt", level=logging.INFO)
+logging.basicConfig(filename="train_segment.txt", format="%(asctime)s : %(message)s", level=logging.INFO)
 
 parser = argparse.ArgumentParser()
 
@@ -61,6 +61,8 @@ segment_net = SegmentNet(init_weights=True)
 # Loss functions
 criterion_segment = torch.nn.BCEWithLogitsLoss()
 
+logging.info("[loss: %s]" % str(criterion_segment))
+
 if opt.cuda:
     segment_net = segment_net.cuda()
     criterion_segment.cuda()
@@ -95,7 +97,7 @@ transforms_mask = transforms.Compose([
 trainOKloader = DataLoader(
     KolektorDataset(dataSetRoot, transforms_=transforms_, transforms_mask=transforms_mask, subFold="Train_OK",
                     isTrain=True),
-    batch_size=opt.batch_size,
+    batch_size=int(opt.batch_size/2),
     shuffle=True,
     num_workers=opt.worker_num,
 )
@@ -103,7 +105,7 @@ trainOKloader = DataLoader(
 trainNGloader = DataLoader(
     KolektorDataset(dataSetRoot, transforms_=transforms_, transforms_mask=transforms_mask, subFold="Train_NG",
                     isTrain=True),
-    batch_size=opt.batch_size,
+    batch_size=int(opt.batch_size/2),
     shuffle=True,
     num_workers=opt.worker_num,
 )
@@ -143,17 +145,17 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
     iterNG = trainNGloader.__iter__()
 
     lenNum = min(len(trainNGloader), len(trainOKloader))
-    lenNum = 2 * (lenNum - 1)
+    lenNum = lenNum - 1
 
     segment_net.train()
     # train *****************************************************************
     for i in range(0, lenNum):
-        if i % 2 == 0:
-            batchData = iterOK.__next__()
-            # idx, batchData = enumerate(trainOKloader)
-        else:
-            batchData = iterNG.__next__()
-            # idx, batchData = enumerate(trainNGloader)
+        batchData_OK = iterOK.__next__()
+        # idx, batchData = enumerate(trainOKloader)
+        batchData_NG = iterNG.__next__()
+        # idx, batchData = enumerate(trainNGloader)
+        batchData = {"img": torch.cat((batchData_OK["img"], batchData_NG["img"]), 0),
+                     "mask": torch.cat((batchData_OK["mask"], batchData_NG["mask"]), 0)}
 
         if opt.cuda:
             img = batchData["img"].cuda()
@@ -187,7 +189,7 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
             )
         )
     # test ****************************************************************************
-    if opt.need_test:
+    if opt.need_test and epoch % opt.test_interval == 0 and epoch >= opt.test_interval:
         loss_epoch = []
         # segment_net.eval()
         for i, testBatch in enumerate(testloader):
@@ -210,7 +212,8 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
             save_image(segTest.data, "%s/img_%d_seg.jpg" % (save_path_str, i))
 
         segment_net.train()
-        logging.info("\r [Epoch %d/%d] [loss %f] [lr %f]" % (epoch, opt.end_epoch, np.mean(loss_epoch), optimizer_seg.state_dict()['param_groups'][0]['lr']))
+        logging.info("\r [Epoch %d/%d] [loss %f] [lr %f]" % (
+        epoch, opt.end_epoch, np.mean(loss_epoch), optimizer_seg.state_dict()['param_groups'][0]['lr']))
     scheduler.step()
 
     # save parameters *****************************************************************
@@ -225,5 +228,3 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
         print("save weights ! epoch = %d" % epoch)
         # segment_net.train()
         pass
-
-
