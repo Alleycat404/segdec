@@ -1,0 +1,9 @@
+#
+testResultDec/
+testResultSeg/
+saved_models/
+saved_models_Frequency-of-use_sampling/
+saved_models_MSE/
+saved_models_old/
+saved_models_mixed_batch/
+Data/testResult_mixed_batch/

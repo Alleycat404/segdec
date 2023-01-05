@@ -28,7 +28,7 @@ parser.add_argument("--cuda", type=bool, default=True, help="number of gpu")
 parser.add_argument("--gpu_num", type=int, default=1, help="number of gpu")
 parser.add_argument("--worker_num", type=int, default=0, help="number of input workers")
 parser.add_argument("--batch_size", type=int, default=4, help="batch size of input")
-parser.add_argument("--lr", type=float, default=0.001, help="adam: learning rate")
+parser.add_argument("--lr", type=float, default=0.0001, help="adam: learning rate")
 parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
 parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of first order momentum of gradient")
 
@@ -37,7 +37,7 @@ parser.add_argument("--end_epoch", type=int, default=61, help="end_epoch")
 parser.add_argument("--seg_epoch", type=int, default=100, help="pretrained segment epoch")
 
 parser.add_argument("--need_test", type=bool, default=True, help="need to test")
-parser.add_argument("--test_interval", type=int, default=1, help="interval of test")
+parser.add_argument("--test_interval", type=int, default=2, help="interval of test")
 parser.add_argument("--need_save", type=bool, default=True, help="need to save")
 parser.add_argument("--save_interval", type=int, default=10, help="interval of save weights")
 
@@ -63,6 +63,7 @@ decision_net = DecisionNet(init_weights=True)
 # criterion_decision  = torch.nn.MSELoss()
 criterion_decision = torch.nn.BCELoss()
 
+logging.info("[loss: %s]" % str(criterion_decision))
 
 if opt.cuda:
     segment_net = segment_net.cuda()
@@ -87,7 +88,7 @@ segment_net.load_state_dict(torch.load("./saved_models/segment_net_%d.pth" % (op
 
 # Optimizers
 optimizer_dec = torch.optim.Adam(decision_net.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-scheduler = MultiStepLR(optimizer_dec, milestones=[20, 40], gamma=0.1)
+# scheduler = MultiStepLR(optimizer_dec, milestones=[20, 40], gamma=0.1)
 
 transforms_ = transforms.Compose([
     transforms.Resize((opt.img_height, opt.img_width), transforms.InterpolationMode.BICUBIC),
@@ -150,8 +151,8 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
         batchData_NG = iterNG.__next__()
         gt_c_NG = Variable(torch.Tensor(np.ones((batchData_NG["img"].size(0), 1))), requires_grad=False)
         #idx, batchData = enumerate(trainNGloader)
-        batchData = {"img": batchData_OK["img"] + batchData_NG["img"],
-                     "mask": batchData_OK["mask"] + batchData_NG["mask"]}
+        batchData = {"img": torch.cat((batchData_OK["img"], batchData_NG["img"]), 0),
+                     "mask": torch.cat((batchData_OK["mask"], batchData_NG["mask"]), 0)}
         gt_c = torch.cat((gt_c_OK, gt_c_NG), 0)
 
         if opt.cuda:
@@ -227,7 +228,7 @@ for epoch in range(opt.begin_epoch, opt.end_epoch):
             epoch, opt.end_epoch, np.mean(loss_epoch), optimizer_dec.state_dict()['param_groups'][0]['lr']))
 
         #decision_net.train()
-    scheduler.step()
+    # scheduler.step()
     # save parameters *****************************************************************
     if opt.need_save and epoch % opt.save_interval == 0 and epoch >= opt.save_interval:
         #decision_net.eval()
